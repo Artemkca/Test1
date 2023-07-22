@@ -7,11 +7,11 @@ namespace ConsoleApp10
     {
         static void Main(string[] args)
         {
-            Cat cat = new Cat();
+            ConsoleChat chat = new ConsoleChat();
+            ChatNetwork network = new ChatNetwork(chat);
 
-            cat.Meow();
-
-            Console.ReadKey();
+            chat.RunInputLine();
+            network.RunServer();
         }
     }
 }
