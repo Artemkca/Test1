@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Collections.Generic;
 using System.Threading;
 using System.Net.Sockets;
 
@@ -30,31 +29,19 @@ namespace ChatClient
             stream.Flush();
         }
 
-        public List<Tuple<string, string>> decodeRequest(string request) 
+        public string[] decodeRequest(string request) 
         {
-            List<Tuple<string, string>> args = new List<Tuple<string, string>>();
-
-            foreach(string line in request.Split('\n'))
-            {
-                string[] keyValue = line.Split('=');
-
-                string key = keyValue[0];
-                string value = keyValue[1];
-
-                args.Add(new Tuple<string, string>(key, value));
-            }
-
-            return args;
+            return request.Split('\n');
         }
 
         public void sendJoin()
         {
-            sendRequest("type=chat-message\nname=" + name);
+            sendRequest("chat-join\n" + name);
         }
 
         public void sendMessage(string text)
         {
-            sendRequest("type=chat-message\nname=" + name + "\ntext=" + text);
+            sendRequest("chat-message\n" + name + "\n" + text);
         }
 
         public void runInputRequests()
@@ -69,20 +56,20 @@ namespace ChatClient
 
                 string request = Encoding.ASCII.GetString(bytes, 0, length);
 
-                List<Tuple<string, string>> decodedRequest = decodeRequest(request);
+                string[] decodedRequest = decodeRequest(request);
 
-                string type = decodedRequest[0].Item2;
+                string type = decodedRequest[0];
 
                 if (type == "chat-message")
                 {
-                    string name = decodedRequest[1].Item2;
-                    string text = decodedRequest[2].Item2;
+                    string name = decodedRequest[1];
+                    string text = decodedRequest[2];
 
                     Chat.printMessage(name, text);
                 }
                 else if (type == "chat-join")
                 {
-                    string name = decodedRequest[1].Item1;
+                    string name = decodedRequest[1];
 
                     Chat.clientJoin(name);
                 }
@@ -98,6 +85,8 @@ namespace ChatClient
 
         public void runClient()
         {
+            sendJoin();
+
             new Thread(send).Start();
             new Thread(Chat.createInputLine).Start();
             runInputRequests();
