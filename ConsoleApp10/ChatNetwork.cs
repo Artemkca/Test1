@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ConsoleApp10
 {
     class ChatNetwork
@@ -17,7 +18,7 @@ namespace ConsoleApp10
 
         public void RunServer()
         {
-
+            Console.WriteLine("[INFO] Server started");
         }
     }
 }

@@ -12,6 +12,8 @@ namespace ConsoleApp10
 
             chat.RunInputLine();
             network.RunServer();
+
+            Console.ReadKey();
         }
     }
 }
