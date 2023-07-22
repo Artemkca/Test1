@@ -17,7 +17,7 @@ namespace ChatServer
             foreach (TcpClient client in clients) 
             {
                 NetworkStream stream = client.GetStream();
-                byte[] bytes = Encoding.ASCII.GetBytes(text);
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
                 
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Flush();
@@ -35,7 +35,7 @@ namespace ChatServer
                 while (true)
                 {
                     int length = stream.Read(bytes, 0, bytes.Length);
-                    string text = Encoding.ASCII.GetString(bytes, 0, length);
+                    string text = Encoding.UTF8.GetString(bytes, 0, length);
 
                     sendRequest(text);
                 }

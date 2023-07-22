@@ -23,7 +23,7 @@ namespace ChatClient
         public void sendRequest(string text)
         {
             NetworkStream stream = client.GetStream();
-            byte[] bytes = Encoding.ASCII.GetBytes(text);
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
 
             stream.Write(bytes, 0, bytes.Length);
             stream.Flush();
@@ -54,7 +54,7 @@ namespace ChatClient
             {
                 int length = stream.Read(bytes, 0, bytes.Length);
 
-                string request = Encoding.ASCII.GetString(bytes, 0, length);
+                string request = Encoding.UTF8.GetString(bytes, 0, length);
 
                 string[] decodedRequest = decodeRequest(request);
 
