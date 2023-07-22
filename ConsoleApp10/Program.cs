@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;v
+using System.Text;
 using System.Threading.Tasks;
+
 
 namespace ConsoleApp10
 {
@@ -12,7 +13,6 @@ namespace ConsoleApp10
         {
             Console.WriteLine("hi hitler");
             Console.WriteLine("hi hitler2");
-
         }
     }
 }
