@@ -81,7 +81,7 @@ namespace ChatClient
         {
             Thread.Sleep(1000);
 
-            sendMessage("hello");
+            //sendMessage("hello");
         }
 
         public void runClient()

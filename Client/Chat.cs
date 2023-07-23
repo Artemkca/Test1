@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 
 namespace ChatClient
@@ -14,10 +15,10 @@ namespace ChatClient
 
         public static void clientJoin(string name)
         {
-            Console.WriteLine("[INFO] Client joined name=" + name);
+            Console.WriteLine("[INFO] Его имя " + name);
         }
 
-        public static void printMessage(string name, string text) 
+        public static void printMessage(string name, string text)
         {
             Console.WriteLine("[INFO] Message name=" + name + " text=" + text);
         }
