@@ -1,24 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Net.Sockets;
 
 
 namespace ChatClient
 {
     class Client
     {
-        public Chat chat;
         public string name;
-        public TcpClient client;
+        TcpClient client;
+
+        Dictionary<string, Action<Client, string[]>> handlers = new Dictionary<string, Action<Client, string[]>>();
+
 
         public Client(string name)
         {
-            Console.WriteLine("[INFO] Client created");
-
             this.name = name;
 
-            this.client = new TcpClient("25.47.56.202", 9090);
+            client = new TcpClient("25.47.56.202", 9090);
+        }
+
+        public void addRequestHandler(string type, Action<Client, string[]> handler)
+        {
+            handlers[type] = handler;
         }
 
         public void sendRequest(string text)
@@ -28,21 +34,6 @@ namespace ChatClient
 
             stream.Write(bytes, 0, bytes.Length);
             stream.Flush();
-        }
-
-        public string[] decodeRequest(string request) 
-        {
-            return request.Split('\n');
-        }
-
-        public void sendJoin()
-        {
-            sendRequest("chat-join\n" + name);
-        }
-
-        public void sendMessage(string text)
-        {
-            sendRequest("chat-message\n" + name + "\n" + text);
         }
 
         public void runInputRequests()
@@ -57,38 +48,18 @@ namespace ChatClient
 
                 string request = Encoding.UTF8.GetString(bytes, 0, length);
 
-                string[] decodedRequest = decodeRequest(request);
+                string[] args = request.Split('\n');
 
-                string type = decodedRequest[0];
+                string type = args[0];
 
-                if (type == "chat-message")
-                {
-                    string name = decodedRequest[1];
-                    string text = decodedRequest[2];
+                Action<Client, string[]> handler = handlers[type];
 
-                    Chat.printMessage(name, text);
-                }
-                else if (type == "chat-join")
-                {
-                    string name = decodedRequest[1];
-
-                    Chat.clientJoin(name);
-                }
+                handler(this, args);
             }
-        }
-
-        public void send()
-        {
-            Thread.Sleep(1000);
-
-            //sendMessage("hello");
         }
 
         public void runClient()
         {
-            sendJoin();
-
-            new Thread(send).Start();
             new Thread(Chat.createInputLine).Start();
             runInputRequests();
         }
