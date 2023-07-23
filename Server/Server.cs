@@ -36,18 +36,26 @@ namespace Server
 
             NetworkStream stream = client.GetStream();
 
-            while (true)
+            try
             {
-                int length = stream.Read(bytes, 0, bytes.Length);
-                string request = Encoding.UTF8.GetString(bytes, 0, length);
+                while (true)
+                {
+                    int length = stream.Read(bytes, 0, bytes.Length);
+                    string request = Encoding.UTF8.GetString(bytes, 0, length);
 
-                string[] args = request.Split('\n');
+                    string[] args = request.Split('\n');
 
-                string type = args[0];
+                    string type = args[0];
 
-                Action<Server, string[]> handler = handlers[type];
+                    Action<Server, string[]> handler = handlers[type];
 
-                handler(this, args);
+                    handler(this, args);
+                }
+            }
+            catch {}
+            finally
+            {
+                clients.Remove(client);
             }
         }
 
