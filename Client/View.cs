@@ -37,8 +37,6 @@ namespace Client
 
         public void createInputLine()
         {
-            Console.Write("твое сообщение: ");
-
             while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
