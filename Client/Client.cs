@@ -8,6 +8,7 @@ namespace ChatClient
 {
     class Client
     {
+        public Chat chat;
         public string name;
         public TcpClient client;
 

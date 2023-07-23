@@ -5,6 +5,8 @@ namespace ChatClient
 {
     class Chat
     {
+        public Client client;
+
         public static void createInputLine() 
         {
             Console.WriteLine("[INFO] Input line created");
