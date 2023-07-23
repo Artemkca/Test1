@@ -10,6 +10,7 @@ namespace Server
 {
     class Server
     {
+        object podLock = new object();
         List<TcpClient> clients = new List<TcpClient>();
         Dictionary<string, Action<Server, string[]>> handlers = new Dictionary<string, Action<Server, string[]>>();
 
@@ -23,7 +24,7 @@ namespace Server
             foreach (TcpClient client in clients)
             {
                 NetworkStream stream = client.GetStream();
-                byte[] bytes = Encoding.UTF8.GetBytes(request);
+                byte[] bytes = Encoding.UTF8.GetBytes(request + '\x4');
 
                 stream.Write(bytes, 0, bytes.Length);
                 stream.Flush();
