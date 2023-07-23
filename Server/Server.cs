@@ -10,11 +10,24 @@ namespace Server
 {
     class Server
     {
-        Dictionary<string, Action<string[]>> handlers = new Dictionary<string, Action<string[]>>();
+        List<TcpClient> clients = new List<TcpClient>();
+        Dictionary<string, Action<Server, string[]>> handlers = new Dictionary<string, Action<Server, string[]>>();
 
-        public void addRequestHandler(string type, Action<string[]> handler)
+        public void addRequestHandler(string type, Action<Server, string[]> handler)
         {
             handlers[type] = handler;
+        }
+
+        public void sendRequestToAll(string request)
+        {
+            foreach (TcpClient client in clients)
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] bytes = Encoding.UTF8.GetBytes(request);
+
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Flush();
+            }
         }
 
         public void clientHandler(TcpClient client)
@@ -32,9 +45,9 @@ namespace Server
 
                 string type = args[0];
 
-                Action<string[]> handler = handlers[type];
+                Action<Server, string[]> handler = handlers[type];
 
-                handler(args);
+                handler(this, args);
             }
         }
 
@@ -43,10 +56,13 @@ namespace Server
             TcpListener server = new TcpListener(IPAddress.Any, 9090);
             server.Start();
 
+            Console.WriteLine("сервер запущен");
+
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
 
+                clients.Add(client);
                 new Thread(() => clientHandler(client)).Start();
             }
         }
