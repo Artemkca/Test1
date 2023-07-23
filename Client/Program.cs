@@ -6,12 +6,15 @@ namespace Client
 {
     class Program
     {
+        static Client client;
+        static View view;
+
         static void chatJoin(Client server, string[] args)
         {
             string type = args[0];
             string name = args[1];
 
-            Chat.clientJoin(name);
+            view.clientJoin(name);
         }
         static void chatMessage(Client server, string[] args)
         {
@@ -19,7 +22,7 @@ namespace Client
             string name = args[1];
             string text = args[2];
 
-            Chat.printMessage(name, text);
+            view.printMessage(name, text);
         }
 
         static void send(Client client)
@@ -37,7 +40,8 @@ namespace Client
 
             string name = Console.ReadLine();
 
-            Client client = new Client(name);
+            client = new Client(name);
+            view = new View(client);
 
             client.addRequestHandler("chat-join", chatJoin);
             client.addRequestHandler("chat-message", chatMessage);
@@ -45,7 +49,7 @@ namespace Client
             client.sendRequest("chat-join\n" + name);
             new Thread(() => send(client)).Start();
 
-            new Thread(Chat.createInputLine).Start();
+            new Thread(() => view.createInputLine()).Start();
             client.runClient();
 
             Console.ReadKey();
