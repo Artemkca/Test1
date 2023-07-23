@@ -39,7 +39,6 @@ namespace Client
         {
             while (true)
             {
-                Console.Write("твое сообщение: " + line + new string(' ', 80 - line.Length) + "\r");
                 ConsoleKeyInfo key = Console.ReadKey(true);
 
                 int ord = key.KeyChar - '0';
