@@ -9,7 +9,15 @@ namespace Server
         {
             Server server = new Server();
 
-            server.addRequestHandler();
+            server.addRequestHandler("chat-join", (string[] requestArgs) =>
+            {
+                Console.WriteLine("requestArgs: " + string.Join(", ", requestArgs));
+            });
+
+            server.addRequestHandler("chat-message", (string[] requestArgs) => 
+            {
+                Console.WriteLine("requestArgs: " + string.Join(", ", requestArgs));    
+            });
 
             server.runServer();
 
