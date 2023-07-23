@@ -7,8 +7,11 @@ namespace ChatClient
     {
         static void Main(string[] args)
         {
-            Console.Write("Your name: ");
+            Console.Write("Введите свое имя: ");
+
             string name = Console.ReadLine();
+
+            Console.WriteLine($"Привет {name}");
 
             Client client = new Client(name);
 
