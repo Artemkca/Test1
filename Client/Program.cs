@@ -2,7 +2,7 @@
 using System.Threading;
 
 
-namespace ChatClient
+namespace Client
 {
     class Program
     {
@@ -11,7 +11,7 @@ namespace ChatClient
             string type = args[0];
             string name = args[1];
 
-            Console.WriteLine(name + " присоеденился");
+            Chat.clientJoin(name);
         }
         static void chatMessage(Client server, string[] args)
         {
@@ -19,7 +19,7 @@ namespace ChatClient
             string name = args[1];
             string text = args[2];
 
-            Console.WriteLine(name + ": " + text);
+            Chat.printMessage(name, text);
         }
 
         static void send(Client client)
@@ -45,6 +45,7 @@ namespace ChatClient
             client.sendRequest("chat-join\n" + name);
             new Thread(() => send(client)).Start();
 
+            new Thread(Chat.createInputLine).Start();
             client.runClient();
 
             Console.ReadKey();

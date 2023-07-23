@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 
 
-namespace ChatClient
+namespace Client
 {
     class Client
     {
@@ -60,7 +59,6 @@ namespace ChatClient
 
         public void runClient()
         {
-            new Thread(Chat.createInputLine).Start();
             runInputRequests();
         }
     }
