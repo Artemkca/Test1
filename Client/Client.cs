@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net.Sockets;
 using System.Text;
+using System.Net.Sockets;
+using System.Collections.Generic;
 
 
 namespace Client
@@ -26,39 +26,30 @@ namespace Client
             handlers[type] = handler;
         }
 
-        public void sendRequest(string text)
+        public void sendJoin()
         {
-            NetworkStream stream = client.GetStream();
-            byte[] bytes = Encoding.UTF8.GetBytes(text);
-
-            stream.Write(bytes, 0, bytes.Length);
-            stream.Flush();
+            Network.sendJoin(client, name);
         }
 
         public void sendMessage(string text)
         {
-            sendRequest("chat-message\n" + name + "\n" + text);
+            Network.sendMessage(client, name, text);
         }
 
         public void runInputRequests()
         {
-            NetworkStream stream = client.GetStream();
-
             while (true)
             {
-                byte[] bytes = new byte[4096];
+                List<string[]> pack = Network.recv(client);
 
-                int length = stream.Read(bytes, 0, bytes.Length);
+                foreach (string[] args in pack)
+                {
+                    string type = args[0];
 
-                string request = Encoding.UTF8.GetString(bytes, 0, length);
+                    Action<Client, string[]> handler = handlers[type];
 
-                string[] args = request.Split('\n');
-
-                string type = args[0];
-
-                Action<Client, string[]> handler = handlers[type];
-
-                handler(this, args);
+                    handler(this, args);
+                }
             }
         }
 

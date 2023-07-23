@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 
 
 namespace Client
 {
     class Program
     {
-        static Client client;
         static View view;
+        static Client client;
 
         static void chatJoin(Client server, string[] args)
         {
@@ -46,10 +47,11 @@ namespace Client
             client.addRequestHandler("chat-join", chatJoin);
             client.addRequestHandler("chat-message", chatMessage);
 
-            client.sendRequest("chat-join\n" + name);
-            new Thread(() => send(client)).Start();
+            client.sendJoin();
 
+            new Thread(() => send(client)).Start();
             new Thread(() => view.createInputLine()).Start();
+
             client.runClient();
 
             Console.ReadKey();
