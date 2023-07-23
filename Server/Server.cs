@@ -24,6 +24,11 @@ namespace ChatServer
             }
         }
 
+        public string[] decodeRequest(string request)
+        {
+            return request.Split('\n');
+        }
+
         public void handleClient(TcpClient client) 
         {
             try 
@@ -35,9 +40,27 @@ namespace ChatServer
                 while (true)
                 {
                     int length = stream.Read(bytes, 0, bytes.Length);
-                    string text = Encoding.UTF8.GetString(bytes, 0, length);
+                    string request = Encoding.UTF8.GetString(bytes, 0, length);
 
-                    sendRequest(text);
+                    string[] decodedRequest = decodeRequest(request);
+
+                    string type = decodedRequest[0];
+
+                    if (type == "chat-message")
+                    {
+                        string name = decodedRequest[1];
+                        string text = decodedRequest[2];
+
+                        Console.WriteLine("[INFO] Message name=" + name + " text=" + text);
+                    }
+                    else if (type == "chat-join")
+                    {
+                        string name = decodedRequest[1];
+
+                        Console.WriteLine("[INFO] Client joined name=" + name);
+                    }
+
+                    sendRequest(request);
                 }
             }
             catch {}
