@@ -35,6 +35,11 @@ namespace Client
             stream.Flush();
         }
 
+        public void sendMessage(string text)
+        {
+            sendRequest("chat-message\n" + name + "\n" + text);
+        }
+
         public void runInputRequests()
         {
             byte[] bytes = new byte[4096];

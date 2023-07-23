@@ -29,7 +29,7 @@ namespace Client
         {
             while (true)
             {
-                client.sendRequest("chat-message\n" + client.name + "\nтекст сообщения");
+                client.sendMessage("текст сообщения");
                 Thread.Sleep(1000);
             }
         }
