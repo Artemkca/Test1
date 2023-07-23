@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
-using static System.Net.Mime.MediaTypeNames;
+
 
 namespace Client
 {
@@ -25,8 +20,18 @@ namespace Client
         }
         public void printMessage(string name, string text)
         {
-            Console.WriteLine("\r" + name + ":" + text + new string(' ', 80 - line.Length));
-            Console.Write(line + new string(' ', 80 - line.Length) + "\r");
+            string printText = name + ": " + text;
+
+            try
+            {
+                Console.WriteLine("\r" + printText + new string(' ', 96 - printText.Length));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("\r" + printText);
+            }
+            
+            Console.Write("твое сообщение: " + line + new string(' ', 80 - line.Length) + "\r");
 
         }
 
@@ -34,7 +39,8 @@ namespace Client
         {
             while (true)
             {
-                ConsoleKeyInfo key = Console.ReadKey();
+                Console.Write("твое сообщение: " + line + new string(' ', 80 - line.Length) + "\r");
+                ConsoleKeyInfo key = Console.ReadKey(true);
 
                 int ord = key.KeyChar - '0';
 
@@ -48,22 +54,15 @@ namespace Client
                     try
                     {
                         line = line.Substring(0, line.Length - 1);
-                        Console.Write(line + new string(' ', 80 - line.Length) + "\r");
+                        Console.Write("твое сообщение: " + line + new string(' ', 80 - line.Length) + "\r");
                     }
                     catch (System.ArgumentOutOfRangeException) { }
-
-                    line = line.Substring(0, line.Length - 1);
-
-                    Console.Write(line + new string(' ', 80 - line.Length) + "\r");
                 }
-                else
+                else if (line.Length < 80)
                 {
                     line += key.KeyChar;
-                    Console.Write(line + new string(' ', 80 - line.Length) + "\r");
-
+                    Console.Write("твое сообщение: " + line + new string(' ', 80 - line.Length) + "\r");
                 }
-
-
             }
         }
     }

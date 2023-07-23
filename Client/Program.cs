@@ -26,15 +26,6 @@ namespace Client
             view.printMessage(name, text);
         }
 
-        static void send(Client client)
-        {
-            while (true)
-            {
-                client.sendMessage("текст сообщения");
-                Thread.Sleep(1000);
-            }
-        }
-
         static void Main(string[] args)
         {
             Console.Write("Введите свое имя: ");
@@ -49,7 +40,6 @@ namespace Client
 
             client.sendJoin();
 
-            new Thread(() => send(client)).Start();
             new Thread(() => view.createInputLine()).Start();
 
             client.runClient();
