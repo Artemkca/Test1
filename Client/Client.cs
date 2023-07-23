@@ -42,12 +42,12 @@ namespace Client
 
         public void runInputRequests()
         {
-            byte[] bytes = new byte[4096];
-
             NetworkStream stream = client.GetStream();
 
             while (true)
             {
+                byte[] bytes = new byte[4096];
+
                 int length = stream.Read(bytes, 0, bytes.Length);
 
                 string request = Encoding.UTF8.GetString(bytes, 0, length);
