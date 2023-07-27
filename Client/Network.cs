@@ -12,6 +12,7 @@ namespace Client
 
         public static List<string[]> recv(TcpClient client)
         {
+
             NetworkStream stream = client.GetStream();
 
             byte[] bytes = new byte[4096];
