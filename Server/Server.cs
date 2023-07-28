@@ -16,7 +16,7 @@ namespace Server
         Hashtable listeners = new Hashtable();
         Queue<Event> events = new Queue<Event>();
 
-        public void createEvent(string[] args)
+        public void CreateEvent(string[] args)
         {
             string type = args[0];
             Event serverEvent = new Event();
@@ -34,17 +34,17 @@ namespace Server
             events.Enqueue(serverEvent);
         }
 
-        public void registerListener(Action<ChatJoinEvent> listener)
+        public void RegisterListener(Action<ChatJoinEvent> listener)
         {
             listeners["chat-join"] = listener;
         }
 
-        public void registerListener(Action<ChatMessageEvent> listener)
+        public void RegisterListener(Action<ChatMessageEvent> listener)
         {
             listeners["chat-message"] = listener;
         }
 
-        public void sendRequestToAll(string request)
+        public void SendRequestToAll(string request)
         {
             foreach (TcpClient client in clients)
             {
@@ -56,7 +56,7 @@ namespace Server
             }
         }
 
-        public void clientHandler(TcpClient client)
+        public void ClientHandler(TcpClient client)
         {
             byte[] bytes = new byte[4096];
 
@@ -71,7 +71,7 @@ namespace Server
 
                     string[] args = request.Split('\n');
 
-                    createEvent(args);
+                    CreateEvent(args);
                 }
             }
             catch {}
@@ -81,7 +81,7 @@ namespace Server
             }
         }
 
-        public void runEvents()
+        public void RunEvents()
         {
             while (true)
             {
@@ -92,21 +92,21 @@ namespace Server
             }
         }
 
-        public void runServer()
+        public void RunServer()
         {
             TcpListener server = new TcpListener(IPAddress.Any, 9090);
             server.Start();
 
             Console.WriteLine("сервер запущен");
 
-            new Thread(runEvents).Start();
+            new Thread(RunEvents).Start();
 
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
 
                 clients.Add(client);
-                new Thread(() => clientHandler(client)).Start();
+                new Thread(() => ClientHandler(client)).Start();
             }
         }
     }
