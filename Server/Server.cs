@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -8,34 +9,39 @@ using System.Threading;
 
 namespace Server
 {
-    class Server
+    public class Server
     {
         List<TcpClient> clients = new List<TcpClient>();
 
-        public Action<Server, string> chatJoinListener;
-        public Action<Server, string, string> chatMessageListener;
+        Hashtable listeners = new Hashtable();
+        Queue<Event> events = new Queue<Event>();
 
-        public void handle(string[] args)
+        public void createEvent(string[] args)
         {
             string type = args[0];
-
-            string name;
-            string text;
+            Event serverEvent = new Event();
 
             switch (type)
             {
                 case "chat-join":
-                    name = args[1];
-
-                    chatJoinListener(this, name);
+                    serverEvent = new ChatJoinEvent(this, args[1]);
                     break;
                 case "chat-message":
-                    name = args[1];
-                    text = args[2];
-
-                    chatMessageListener(this, name, text);
+                    serverEvent = new ChatMessageEvent(this, args[1], args[2]);
                     break;
             }
+
+            events.Enqueue(serverEvent);
+        }
+
+        public void registerListener(Action<ChatJoinEvent> listener)
+        {
+            listeners["chat-join"] = listener;
+        }
+
+        public void registerListener(Action<ChatMessageEvent> listener)
+        {
+            listeners["chat-message"] = listener;
         }
 
         public void sendRequestToAll(string request)
@@ -65,7 +71,7 @@ namespace Server
 
                     string[] args = request.Split('\n');
 
-                    handle(args);
+                    createEvent(args);
                 }
             }
             catch {}
@@ -75,12 +81,25 @@ namespace Server
             }
         }
 
+        public void runEvents()
+        {
+            while (true)
+            {
+                //while (events.Dequeue)
+                //{
+
+                //}
+            }
+        }
+
         public void runServer()
         {
             TcpListener server = new TcpListener(IPAddress.Any, 9090);
             server.Start();
 
             Console.WriteLine("сервер запущен");
+
+            new Thread(runEvents).Start();
 
             while (true)
             {
