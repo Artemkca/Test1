@@ -11,37 +11,29 @@ namespace Server
 {
     public class Server
     {
-        List<TcpClient> clients = new List<TcpClient>();
+        public List<TcpClient> clients = new List<TcpClient>();
 
-        Hashtable listeners = new Hashtable();
-        Queue<Event> events = new Queue<Event>();
+        public List<Listener> listeners = new List<Listener>();
+        public Queue<Event> events = new Queue<Event>();
 
         public void CreateEvent(string[] args)
         {
             string type = args[0];
-            Event serverEvent = new Event();
 
             switch (type)
             {
-                case "chat-join":
-                    serverEvent = new ChatJoinEvent(this, args[1]);
+                case "chatJoin":
+                    events.Enqueue(new ChatJoinEvent(this, args[1]));
                     break;
-                case "chat-message":
-                    serverEvent = new ChatMessageEvent(this, args[1], args[2]);
+                case "sendMessage":
+                    events.Enqueue(new SendMessageEvent(this, args[1], args[2]));
                     break;
             }
-
-            events.Enqueue(serverEvent);
         }
 
-        public void RegisterListener(Action<ChatJoinEvent> listener)
+        public void RegisterListener(Listener listener)
         {
-            listeners["chat-join"] = listener;
-        }
-
-        public void RegisterListener(Action<ChatMessageEvent> listener)
-        {
-            listeners["chat-message"] = listener;
+            listeners.Add(listener);
         }
 
         public void SendRequestToAll(string request)
@@ -85,13 +77,23 @@ namespace Server
         {
             while (true)
             {
-                //while (events.Dequeue)
-                //{
+                while (events.Count != 0)
+                {
+                    Event serverEvent = events.Dequeue();
 
-                //}
+
+                    foreach (Listener listener in listeners)
+                    {
+                        Console.WriteLine(serverEvent.eventName);
+
+                        Handler handler = listener.handlers[serverEvent.eventName];
+
+                        handler(serverEvent);
+                    }
+                }
             }
         }
-
+        
         public void RunServer()
         {
             TcpListener server = new TcpListener(IPAddress.Any, 9090);

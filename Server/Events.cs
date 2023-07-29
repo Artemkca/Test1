@@ -10,12 +10,12 @@ namespace Server
     public class Event 
     {
         public Server server;
+        public string eventName;
 
-        public Event() { }
-
-        public Event(Server server)
+        public Event(Server server, string eventName)
         {
             this.server = server;
+            this.eventName = eventName;
         }
     }
 
@@ -23,18 +23,18 @@ namespace Server
     {
         public string name;
 
-        public ChatJoinEvent(Server server, string name) : base(server)
+        public ChatJoinEvent(Server server, string name) : base(server, "chatJoin")
         {
             this.name = name;
         }
     }
 
-    public class ChatMessageEvent : Event
+    public class SendMessageEvent : Event
     {
         public string name;
         public string text;
 
-        public ChatMessageEvent(Server server, string name, string text) : base(server)
+        public SendMessageEvent(Server server, string name, string text) : base(server, "sendMessage")
         {
             this.name = name;
             this.text = text;

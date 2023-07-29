@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using System.Net.Sockets;
 using System.Collections.Generic;
 
@@ -18,7 +19,8 @@ namespace Client
         {
             this.name = name;
 
-            client = new TcpClient("25.47.56.202", 9090);
+            //client = new TcpClient("25.47.56.202", 9090);
+            client = new TcpClient("localhost", 9090);
         }
 
         public void addRequestHandler(string type, Action<Client, string[]> handler)
@@ -28,7 +30,7 @@ namespace Client
 
         public void sendJoin()
         {
-            Network.sendJoin(client, name);
+            Network.chatJoin(client, name);
         }
 
         public void sendMessage(string text)

@@ -35,8 +35,8 @@ namespace Client
             client = new Client(name);
             view = new View(client);
 
-            client.addRequestHandler("chat-join", chatJoin);
-            client.addRequestHandler("chat-message", chatMessage);
+            client.addRequestHandler("chatJoin", chatJoin);
+            client.addRequestHandler("sendMessage", chatMessage);
 
             client.sendJoin();
 

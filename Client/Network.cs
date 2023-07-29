@@ -8,8 +8,6 @@ namespace Client
 {
     class Network
     {
-        public static object padLock = new object();
-
         public static List<string[]> recv(TcpClient client)
         {
 
@@ -42,14 +40,14 @@ namespace Client
             stream.Flush();
         }
 
-        public static void sendJoin(TcpClient client, string name)
+        public static void chatJoin(TcpClient client, string name)
         {
-            sendRequest(client, "chat-join\n" + name);
+            sendRequest(client, "chatJoin\n" + name);
         }
 
         public static void sendMessage(TcpClient client, string name, string text)
         {
-            sendRequest(client, "chat-message\n" + name + "\n" + text);
+            sendRequest(client, "sendMessage\n" + name + "\n" + text);
         }
     }
 }
